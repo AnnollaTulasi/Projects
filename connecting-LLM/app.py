@@ -1,9 +1,13 @@
 import requests
 from send_email import send_email
 from langchain.chat_models import init_chat_model
+from dotenv import load_dotenv
+import os
 
-api_key = "6e7f4ef989d1456f977963dce9abbde0"
-GEMINI_API_KEY = "AQ.Ab8RN6Ix2PvWc75-3Z782b7UyQvmLyYY331Ek_t8bGkjEvBJNA"
+load_dotenv()
+
+api_key = os.getenv("NEWS_API_KEY")
+GEMINI_API_KEY = os.getenv("GEMINI_API_KEY")
 
 url = (
     "https://newsapi.org/v2//top-headlines?"

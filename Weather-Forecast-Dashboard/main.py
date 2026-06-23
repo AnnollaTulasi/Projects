@@ -8,10 +8,25 @@ days = st.slider("Forecast Days", min_value=1, max_value=5, help="Select the num
 option = st.selectbox("Select data to view ", ("Temperature", "Sky"))
 
 st.subheader(f"{option} for the next {days} in {place}")
+if place:
+    try:
+        filtered_data = get_data(place, days)
 
-data = get_data(place, days, option)
+        if option == "Temperature":
+            temperatures = [dict["main"]["temp"]/10 for dict in filtered_data]
+            dates = [dict["dt_txt"] for dict in filtered_data]
+            figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperatures (C)"})
+            st.plotly_chart(figure)
 
-dates = ["2026-21-06","2026-22-06","2026-23-06"]
-temperatures = [10, 11, 15]
-figure = px.line(x=dates, y=temperatures, labels={"x": "Date", "y": "Temperatures (C)"})
-st.plotly_chart(figure)
+        if option == "Sky":
+            images = {"Clear": "images/clear.png",
+                      "Clouds": "images/cloud.png",
+                      "Rain": "images/rain.png",
+                      "Snow": "images/snow.png"
+                      }
+            sky_conditions = [dict["weather"][0]["main"] for dict in filtered_data]
+            image_paths = [images[condition] for condition in sky_conditions]
+            st.image(image_paths, width=115)
+    except KeyError:
+        st.write("Place doesn't exist ,can enter valid place")
+
